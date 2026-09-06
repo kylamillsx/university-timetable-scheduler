@@ -18,7 +18,7 @@ public class Main {
 
         List<Course> allCourses = List.of(c1, c2, c3, c4, c5);
 
-        // Timeslots: 5 days x 3 periods = 15 slots
+        // Timeslots: 3 days x 3 periods = 9 slots
         List<TimeSlot> allTimeSlots = new ArrayList<>();
         for (Day day : Day.values()) {
             for (int period = 1; period <= 3; period++) {
@@ -54,6 +54,21 @@ public class Main {
 
         //Should be TRUE: c4 shares nothing with c1
         System.out.println("c4 same slot as c1 (should be ok): " + Scheduler.isValid(c4,mon1,testAssignment,allStudents));
+
+        Map<Course, TimeSlot> finalAssignment = new HashMap<>();
+        List<Course> unassigned = new ArrayList<>(allCourses);//mutable copy
+
+        boolean success = Scheduler.solve(unassigned,allTimeSlots,finalAssignment,allStudents);
+
+        if(success){
+            System.out.println("Timetable found:");
+            for(Map.Entry<Course, TimeSlot> entry : finalAssignment.entrySet()){
+                System.out.println(entry.getKey()+" --> "+entry.getValue());
+            }
+        }
+        else{
+            System.out.println("Timetable not found.");
+        }
 
     }
 

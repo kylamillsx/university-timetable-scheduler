@@ -9,16 +9,20 @@ public class Scheduler {
             Course assignedCourse = entry.getKey();
             TimeSlot assignedTimeSlot = entry.getValue();
 
-            if(assignedCourse.getLecturer().equals(course.getLecturer())){//Ensuring the same lecturer doesn't teach course assigned at the same time.
-                return false;
+            if (assignedTimeSlot.equals(timeSlot)) {
+                if(assignedCourse.getLecturer().equals(course.getLecturer())){//Ensuring the same lecturer doesn't teach course assigned at the same time
+                    return false;
+                }
+                if(sharesStudents(course, assignedCourse, allStudents)){
+                    return false;//Student Clash
+                }
+
             }
-            if(sharesStudents(course, assignedCourse, allStudents)){
-                return false;//Student Clash
-            }
+
 
         }
 
-        if (course.getEnrolledCount()>course.getEnrolledCount()){
+        if (course.getEnrolledCount()>course.getRoomSpace()){
             return false;//Capacity check
         }
 
@@ -35,5 +39,29 @@ public class Scheduler {
             }
         }
         return false;
+    }
+
+    public static boolean solve(List<Course> unassigned,List<TimeSlot> allTimeSlots, Map<Course,TimeSlot> assignment, List<Student> allStudents){
+        //Base Case: We're finished once there's nothing left to assign
+        if(unassigned.isEmpty()){
+            return true;
+        }
+
+        Course course = unassigned.get(0);
+        List<Course> remaining = unassigned.subList(1, unassigned.size());
+
+        for(TimeSlot timeSlot: allTimeSlots){
+            if (isValid(course, timeSlot, assignment, allStudents)){
+                assignment.put(course, timeSlot); //Try this assignment
+
+                if(solve(remaining,allTimeSlots,assignment,allStudents)){//Recursion called
+                    return true; //Rest of the courses worked out, propagate success up
+                }
+
+                assignment.remove(course); //Backtracking, try the next slot
+            }
+
+        }
+        return false; //no slot worked for this course
     }
 }
