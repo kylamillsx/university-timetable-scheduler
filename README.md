@@ -40,31 +40,32 @@ With [9] courses, [5] lecturers, and [8] students (with overlapping enrollments)
 
 **Before (unoptimised):**
 Timetable found:
-Cybersecurity --> TUE P1
-Software Engineering --> MON P1
-Networks --> MON P2
-Databases --> MON P2
-Algorithms --> MON P1
-Machine Learning --> MON P3
-AI Fundamentals --> MON P1
-Operating Systems --> MON P2
-Web Development --> MON P1
+- Cybersecurity --> TUE P1
+- Software Engineering --> MON P1
+- Networks --> MON P2
+- Databases --> MON P2
+- Algorithms --> MON P1
+- Machine Learning --> MON P3
+- AI Fundamentals --> MON P1
+- Operating Systems --> MON P2
+- Web Development --> MON P1
 
 **After (optimised):**
-Optimised timetable:
-Cybersecurity --> TUE P1
-Software Engineering --> TUE P1
-Networks --> TUE P2
-Databases --> WED P1
-Algorithms --> WED P2
-Machine Learning --> WED P1
-AI Fundamentals --> MON P1
-Operating Systems --> MON P2
-Web Development --> MON P1
+- Optimised timetable:
+- Cybersecurity --> TUE P1
+- Software Engineering --> TUE P1
+- Networks --> TUE P2
+- Databases --> WED P1
+- Algorithms --> WED P2
+- Machine Learning --> WED P1
+- AI Fundamentals --> MON P1
+- Operating Systems --> MON P2
+- Web Development --> MON P1
 
 **In grid format**
 Final optimised timetable: 
-        MON                   TUE                   WED                   
-P1      Web Development       Software Engineering  Machine Learning      
-P2      Operating Systems     Networks              Algorithms            
-P3      -                     -                     -                     
+|        |        MON        |        TUE        |        WED        |
+|--------|-------------------|-------------------|-------------------|
+|P1      |  Web Development  | Software Engineering | Machine Learning  |   
+| P2     | Operating Systems  |   Networks         |     Algorithms        |  
+| P3     |-                  |  -                |     -             |        
