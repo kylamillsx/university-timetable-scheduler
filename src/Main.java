@@ -4,19 +4,25 @@ import java.sql.Time;
 import java.util.*;
 public class Main {
     public static void main(String[] args) {
-        //Lecturers
+        // Lecturers
         Lecturer l1 = new Lecturer("L1", "Dr. Smith");
         Lecturer l2 = new Lecturer("L2", "Dr. Jones");
         Lecturer l3 = new Lecturer("L3", "Dr. Patel");
+        Lecturer l4 = new Lecturer("L4", "Dr. Nguyen");
+        Lecturer l5 = new Lecturer("L5", "Dr. Oduya");
 
-        // Courses — c1 and c3 share a lecturer (l1), to test lecturer-clash logic
+        // Courses — l1 teaches c1 & c6, l2 teaches c2 & c7, to test lecturer-clash logic
         Course c1 = new Course("C1", "Algorithms", l1, 25, 30);
         Course c2 = new Course("C2", "Databases", l2, 20, 25);
-        Course c3 = new Course("C3", "AI Fundamentals", l1, 15, 20);
-        Course c4 = new Course("C4", "Networks", l3, 30, 30);
-        Course c5 = new Course("C5", "Software Engineering", l2, 18, 20);
+        Course c3 = new Course("C3", "AI Fundamentals", l3, 15, 20);
+        Course c4 = new Course("C4", "Networks", l4, 30, 30);
+        Course c5 = new Course("C5", "Software Engineering", l5, 18, 20);
+        Course c6 = new Course("C6", "Operating Systems", l1, 22, 25);
+        Course c7 = new Course("C7", "Web Development", l2, 20, 20);
+        Course c8 = new Course("C8", "Machine Learning", l3, 12, 15);
+        Course c9 = new Course("C9", "Cybersecurity", l4, 16, 20);
 
-        List<Course> allCourses = List.of(c1, c2, c3, c4, c5);
+        List<Course> allCourses = List.of(c1, c2, c3, c4, c5, c6, c7, c8, c9);
 
         // Timeslots: 3 days x 3 periods = 9 slots
         List<TimeSlot> allTimeSlots = new ArrayList<>();
@@ -26,34 +32,22 @@ public class Main {
             }
         }
 
-        // Students — s1 and s2 both take (c1, c2), to test student-clash logic
-        // s3 takes (c4, c5) — no overlap with anyone else, a "clean" case
-        Student s1 = new Student("S1", List.of(c1, c2));
-        Student s2 = new Student("S2", List.of(c1, c2));
-        Student s3 = new Student("S3", List.of(c4, c5));
-        Student s4 = new Student("S4", List.of(c3, c4));
+        // Students — deliberate overlaps to exercise student-clash logic
+        Student s1 = new Student("S1", List.of(c1, c2));       // Algorithms + Databases
+        Student s2 = new Student("S2", List.of(c1, c2));       // same pair as s1
+        Student s3 = new Student("S3", List.of(c4, c5));       // Networks + SWE
+        Student s4 = new Student("S4", List.of(c3, c4));       // AI + Networks
+        Student s5 = new Student("S5", List.of(c6, c7));       // OS + Web Dev
+        Student s6 = new Student("S6", List.of(c6, c8));       // OS + ML
+        Student s7 = new Student("S7", List.of(c7, c9));       // Web Dev + Cybersecurity
+        Student s8 = new Student("S8", List.of(c8, c9));       // ML + Cybersecurity
 
-        List<Student> allStudents = List.of(s1, s2, s3, s4);
-
+        List<Student> allStudents = List.of(s1, s2, s3, s4, s5, s6, s7, s8);
         // Sanity check output
         System.out.println("Courses: " + allCourses);
         System.out.println("TimeSlots: " + allTimeSlots);
         System.out.println("Students: " + allStudents.size());
         System.out.println("Setup complete.");
-
-        Map<Course, TimeSlot> testAssignment = new HashMap<>();
-        TimeSlot mon1 = allTimeSlots.get(0); //MON P1
-
-        testAssignment.put(c1, mon1);// c1 (lecturer l1) assigned to MON P1
-
-        //Should be FALSE: c3 shares lecturer l1 with c1, same slot
-        System.out.println("c3 same slot as c1(lecturer clash): "+Scheduler.isValid(c3,mon1,testAssignment,allStudents));
-
-        //Should be FALSE: c2 shares student s1/s2 with c1, same slot
-        System.out.println("c2 same slot as c1 (student clash): "+ Scheduler.isValid(c2,mon1,testAssignment,allStudents));
-
-        //Should be TRUE: c4 shares nothing with c1
-        System.out.println("c4 same slot as c1 (should be ok): " + Scheduler.isValid(c4,mon1,testAssignment,allStudents));
 
         Map<Course, TimeSlot> finalAssignment = new HashMap<>();
         List<Course> unassigned = new ArrayList<>(allCourses);//mutable copy
@@ -75,12 +69,16 @@ public class Main {
             for (Map.Entry<Course, TimeSlot>entry:finalAssignment.entrySet()){
                 System.out.println(entry.getKey()+" --> "+entry.getValue());
             }
+
+            System.out.println("\nFinal optimised timetable: ");
+            Scheduler.printGrid(finalAssignment,allTimeSlots);
         }
         else{
             System.out.println("Timetable not found.");
         }
 
     }
+
 
 
 }
