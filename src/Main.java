@@ -65,6 +65,16 @@ public class Main {
             for(Map.Entry<Course, TimeSlot> entry : finalAssignment.entrySet()){
                 System.out.println(entry.getKey()+" --> "+entry.getValue());
             }
+
+            System.out.println("\nScore before optimisation: "+Scheduler.score(finalAssignment));
+
+            Scheduler.improve(finalAssignment,allStudents,allTimeSlots,1000);
+
+            System.out.println("Score after optimisation: "+Scheduler.score(finalAssignment));
+            System.out.println("\nOptimised timetable:");
+            for (Map.Entry<Course, TimeSlot>entry:finalAssignment.entrySet()){
+                System.out.println(entry.getKey()+" --> "+entry.getValue());
+            }
         }
         else{
             System.out.println("Timetable not found.");

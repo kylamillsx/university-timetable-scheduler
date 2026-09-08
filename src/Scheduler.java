@@ -98,4 +98,62 @@ public class Scheduler {
 
 
     }
+
+    /**
+     * Improving a valid timetable via steepest ascent hill climbing.
+     * At each iteration, evaluating every possible pair-swap applying
+     * whichever swap gives greatest score improvement.
+     * Stopping when no swap improves the score further (local minimum reached)
+     * or if hit maxIterations.
+     *
+     */
+    public static void improve(Map<Course, TimeSlot> assignment, List<Student>allStudents,List<TimeSlot> allTimeSlots,int maxIterations){
+        List<Course> courses = new ArrayList<>(assignment.keySet());
+        int currentScore = score(assignment);
+
+        for(int iteration = 0;iteration<maxIterations;iteration++){
+            Course bestCourse = null;
+            TimeSlot bestSlot = null;
+            int bestScore = currentScore;
+
+            //Checking each course in each possible timeslot
+            for(Course course: courses){
+                TimeSlot originalTimeSlot = assignment.get(course);
+                for(TimeSlot candidateSlot : allTimeSlots){
+                    if(candidateSlot.equals(originalTimeSlot)) continue; //Avoid moving to same slot.
+
+                    assignment.remove(course); //Take it out to check validity temporarily
+                    boolean valid = isValid(course,candidateSlot, assignment, allStudents);
+                    assignment.put(course,originalTimeSlot);
+
+                    if(valid){
+                        assignment.put(course, candidateSlot);
+
+                        int candidateScore = score(assignment);
+                        if(candidateScore<bestScore){
+                            bestScore = candidateScore;
+                            bestCourse=course;
+                            bestSlot = candidateSlot;
+                        }
+
+                        assignment.put(course,originalTimeSlot);
+
+
+                    }
+
+
+                }
+            }
+
+            //No improving swap found anywhere means we reached local minimum, stop early
+            if(bestCourse==null){
+                System.out.println("No further improvement found after "+iteration+"iterations.");
+                break;
+            }
+
+            //Now we commit the best move we found this iteration
+            assignment.put(bestCourse,bestSlot);
+            currentScore = bestScore;
+        }
+    }
 }
