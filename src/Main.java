@@ -47,28 +47,43 @@ public class Main {
         System.out.println("Courses: " + allCourses);
         System.out.println("TimeSlots: " + allTimeSlots);
         System.out.println("Students: " + allStudents.size());
-        System.out.println("Setup complete.");
+        System.out.println("Setup complete.\n");
 
         Map<Course, TimeSlot> finalAssignment = new HashMap<>();
         List<Course> unassigned = new ArrayList<>(allCourses);//mutable copy
 
+        //Constraint Checks
+
+        // Only one time slot available
+        List<TimeSlot> oneSlot = List.of(new TimeSlot(Day.MON, 1));
+
+        // Test 1: Lecturer clash — C1 and C6 share lecturer L1
+        System.out.println("Lecturer clash: " + Scheduler.solve(new ArrayList<>(List.of(c1, c6)), oneSlot, new HashMap<>(), allStudents));
+
+        // Test 2: Student clash — S1 takes both C1 and C2
+        System.out.println("Student clash: " + Scheduler.solve(new ArrayList<>(List.of(c1, c2)), oneSlot, new HashMap<>(), allStudents));
+
         boolean success = Scheduler.solve(unassigned,allTimeSlots,finalAssignment,allStudents);
 
         if(success){
-            System.out.println("Timetable found:");
+            System.out.println("\nTimetable found:");
             for(Map.Entry<Course, TimeSlot> entry : finalAssignment.entrySet()){
                 System.out.println(entry.getKey()+" --> "+entry.getValue());
             }
 
+
             System.out.println("\nScore before optimisation: "+Scheduler.score(finalAssignment));
 
+
             Scheduler.improve(finalAssignment,allStudents,allTimeSlots,1000);
+
 
             System.out.println("Score after optimisation: "+Scheduler.score(finalAssignment));
             System.out.println("\nOptimised timetable:");
             for (Map.Entry<Course, TimeSlot>entry:finalAssignment.entrySet()){
                 System.out.println(entry.getKey()+" --> "+entry.getValue());
             }
+
 
             System.out.println("\nFinal optimised timetable: ");
             Scheduler.printGrid(finalAssignment,allTimeSlots);
@@ -77,8 +92,9 @@ public class Main {
             System.out.println("Timetable not found.");
         }
 
+
     }
 
 
-
 }
+
